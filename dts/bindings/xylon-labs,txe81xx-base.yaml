@@ -1,0 +1,41 @@
+# Common properties shared by all TXE81xx variants.
+# Not a standalone binding - included by xylon,txe8116.yaml and xylon,txe8124.yaml.
+
+include:
+  - name: spi-device.yaml
+  - name: gpio-controller.yaml
+
+on-bus: spi
+
+properties:
+  reset-gpios:
+    type: phandle-array
+    description: |
+      Active-low reset signal. When asserted (driven low), the device
+      is held in reset. Must be released before SPI communication.
+
+  irq-gpios:
+    type: phandle-array
+    description: |
+      Active-low interrupt output from the device. Asserted when an
+      input pin changes state (if interrupt mode is enabled).
+
+  glitch-filter-pins:
+    type: int
+    default: 0
+    description: |
+      Bitmask of pins for which the glitch filter is enabled at boot.
+      Bit N corresponds to absolute pin N (pin 0-7 = port 0, pin 8-15 = port 1, etc.).
+      Example: 0x00000101 enables the filter on pin 0 and pin 8.
+
+  led-gpios:
+    type: phandle-array
+    description: Optional LED GPIO specifier referencing a pin on this device.
+
+  sw-gpios:
+    type: phandle-array
+    description: Optional switch GPIO specifier referencing a pin on this device.
+
+gpio-cells:
+  - pin
+  - flags

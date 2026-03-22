@@ -1,0 +1,39 @@
+[general]
+# Merge commits are excluded automatically by gitlint.
+ignore-merge-commits=true
+# Don't fail when a push contains no commits (e.g. tag-only pushes).
+fail-without-commits=false
+verbosity=2
+
+# ── Title (subject line) rules ────────────────────────────────────────────
+
+[title-max-length]
+# Zephyr convention: subject ≤ 72 characters.
+line-length=72
+
+[title-trailing-whitespace]
+# No trailing spaces on the subject line.
+
+[title-hard-tab]
+# No hard tabs in the subject line.
+
+[title-must-not-contain-word]
+# Reject "work in progress" placeholder commits.
+words=WIP,FIXUP,SQUASH
+
+[title-match-regex]
+# Subject must follow  "component: short description" Zephyr style.
+# The component prefix may contain slashes (e.g. "drivers/gpio: ...").
+regex=^[a-zA-Z0-9_/\-]+(\([a-zA-Z0-9_/\-]+\))?:\s.+
+
+# ── Body rules ────────────────────────────────────────────────────────────
+
+[body-max-line-length]
+# Allow slightly longer lines in the body (URLs, tables).
+line-length=75
+
+[body-first-line-empty]
+# A blank line must separate the subject from the body.
+
+[body-hard-tab]
+# No hard tabs in the body.

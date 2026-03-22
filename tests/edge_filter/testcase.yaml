@@ -1,0 +1,3 @@
+tests:
+  drivers.edge_filter:
+    tags: txe81xx unit

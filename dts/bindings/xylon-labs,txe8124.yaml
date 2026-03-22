@@ -1,0 +1,31 @@
+description: |
+  Texas Instruments TXE8124 SPI GPIO expander.
+
+  24 I/O pins arranged as 3 ports of 8 bits each.
+  Pin numbering: pins 0-7 map to port 0, pins 8-15 map to port 1,
+  pins 16-23 map to port 2.
+
+  Example:
+    &spi1 {
+      txe8124: txe8124@0 {
+        compatible = "xylon,txe8124";
+        reg = <0>;
+        spi-max-frequency = <312500>;
+        reset-gpios = <&gpioc 6 GPIO_ACTIVE_LOW>;
+        irq-gpios   = <&gpioc 7 GPIO_ACTIVE_LOW>;
+        gpio-controller;
+        #gpio-cells = <2>;
+        ngpios = <24>;
+      };
+    };
+
+compatible: "xylon-labs,txe8124"
+
+include: xylon-labs,txe81xx-base.yaml
+
+properties:
+  ngpios:
+    type: int
+    const: 24
+    description: Number of GPIO pins. Fixed at 24 for TXE8124.
+    description: Number of GPIO pins. Fixed at 24 for TXE8124.

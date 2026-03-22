@@ -1,0 +1,29 @@
+description: |
+  Texas Instruments TXE8116 SPI GPIO expander.
+
+  16 I/O pins arranged as 2 ports of 8 bits each.
+  Pin numbering: pins 0-7 map to port 0, pins 8-15 map to port 1.
+
+  Example:
+    &spi1 {
+      txe8116: txe8116@0 {
+        compatible = "xylon,txe8116";
+        reg = <0>;
+        spi-max-frequency = <312500>;
+        reset-gpios = <&gpioc 6 GPIO_ACTIVE_LOW>;
+        irq-gpios   = <&gpioc 7 GPIO_ACTIVE_LOW>;
+        gpio-controller;
+        #gpio-cells = <2>;
+        ngpios = <16>;
+      };
+    };
+
+compatible: "xylon-labs,txe8116"
+
+include: xylon-labs,txe81xx-base.yaml
+
+properties:
+  ngpios:
+    type: int
+    const: 16
+    description: Number of GPIO pins. Fixed at 16 for TXE8116.

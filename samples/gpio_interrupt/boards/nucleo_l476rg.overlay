@@ -1,0 +1,27 @@
+/* SPDX-License-Identifier: MIT */
+/* Overlay for TXE81xx GPIO interrupt sample — STM32 Nucleo-L476RG */
+
+&spi1 {
+    status = "okay";
+    cs-gpios = <&gpioa 4 GPIO_ACTIVE_LOW>;
+
+    txe81xx: txe81xx@0 {
+        compatible = "xylon-labs,txe8116";
+        reg = <0>;
+        spi-max-frequency = <312500>;
+        reset-gpios = <&gpioc 6 GPIO_ACTIVE_LOW>;
+        irq-gpios   = <&gpioc 7 GPIO_ACTIVE_LOW>;
+        gpio-controller;
+        #gpio-cells = <2>;
+        ngpios = <16>;
+
+        /* pin 0 = port 0, pin 0 — LED (active low) */
+        led-gpios = <&txe81xx 0 GPIO_ACTIVE_LOW>;
+
+        /* pin 8 = port 1, pin 0 — switch (active high) */
+        sw-gpios  = <&txe81xx 8 GPIO_ACTIVE_HIGH>;
+
+        /* hardware glitch filter enabled on switch pin (bit 8) */
+        glitch-filter-pins = <0x00000100>;
+    };
+};

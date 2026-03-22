@@ -1,0 +1,24 @@
+config GPIO_TXE81XX
+	bool "TXE81xx SPI GPIO expander driver"
+	default y
+	depends on DT_HAS_XYLON_LABS_TXE8116_ENABLED || DT_HAS_XYLON_LABS_TXE8124_ENABLED
+	depends on SPI
+	select GPIO
+	help
+	  Enable support for the Texas Instruments TXE81xx series
+	  SPI GPIO expander (TXE8116 and TXE8124).
+
+	  The TXE8116 provides 16 I/O pins (2 ports) and the TXE8124
+	  provides 24 I/O pins (3 ports), each configured via an SPI
+	  register interface.
+
+if GPIO_TXE81XX
+
+config GPIO_TXE81XX_INIT_PRIORITY
+	int "Init priority"
+	default 80
+	help
+	  Device driver initialization priority. Must be higher than
+	  the SPI bus driver priority.
+
+endif # GPIO_TXE81XX

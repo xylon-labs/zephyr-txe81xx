@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/zephyrproject-rtos/zephyr-build:v0.28.8
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: driver
+
+      - name: Cache west modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            .west
+            zephyr/
+            modules/
+            bootloader/
+            tools/
+          key: west-${{ hashFiles('driver/west.yml') }}
+          restore-keys: west-
+
+      - name: West init & update
+        run: |
+          if [ ! -d .west ]; then
+            west init -l driver
+          fi
+          west update --narrow
+
+      - name: Set up environment
+        run: |
+          ZEPHYR_BASE=$(west list zephyr -f {abspath})
+          echo "ZEPHYR_BASE=${ZEPHYR_BASE}" >> $GITHUB_ENV
+          echo "ZEPHYR_SDK_INSTALL_DIR=/opt/zephyr-sdk" >> $GITHUB_ENV
+          echo "ZEPHYR_TOOLCHAIN_VARIANT=zephyr" >> $GITHUB_ENV
+
+      - name: Build samples
+        run: |
+          for sample in driver/samples/*/; do
+            echo "──── Building: ${sample} ────"
+            west build \
+              --pristine \
+              --board nucleo_l476rg \
+              "${sample}"
+          done
+
+  clang-format:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/zephyrproject-rtos/zephyr-build:v0.28.8
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: clang-format
+        run: |
+          CHANGED=$(git diff --name-only HEAD~1 HEAD -- '*.c' '*.h' '*.cpp' '*.hpp' 2>/dev/null \
+                    || git ls-files -- '*.c' '*.h' '*.cpp' '*.hpp')
+
+          if [[ -z "$CHANGED" ]]; then
+            echo "No C/H files changed."
+            exit 0
+          fi
+
+          echo "$CHANGED"
+          echo "$CHANGED" | xargs clang-format --dry-run --Werror
